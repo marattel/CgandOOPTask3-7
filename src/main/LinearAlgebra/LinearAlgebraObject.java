@@ -1,4 +1,4 @@
-package LinearAlgebra;
+package main.LinearAlgebra;
 
 public abstract class LinearAlgebraObject {
     private static final float eps = 1e-9f;
@@ -26,5 +26,7 @@ public abstract class LinearAlgebraObject {
     }
 
 
-
+    public static boolean floatIsZero(float a){
+        return abs(a) < eps;
+    }
 }

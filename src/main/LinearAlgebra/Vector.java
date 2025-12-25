@@ -1,4 +1,4 @@
-package LinearAlgebra;
+package main.LinearAlgebra;
 
 import java.util.Arrays;
 
@@ -8,13 +8,13 @@ public abstract class Vector<T extends Vector<T>> extends LinearAlgebraObject{
 
     protected Vector(float[] data, int dimension){
         super(dimension);
-        this.data = data;
+        if (data.length == dimension) {
+            this.data = data;
+        }else {
+            throw new IllegalArgumentException("Длина массива не совпадает с указанной размерностью");
+
+        }
     }
-
-
-    /*public float [][] getData() {
-        return new float[][]{data.clone()};
-    }*/
 
 
     public float [] getData() {
@@ -23,7 +23,11 @@ public abstract class Vector<T extends Vector<T>> extends LinearAlgebraObject{
 
 
     public float getDataByIndex(int index){
-        return data[index];
+        if (index < data.length && index >= 0) {
+            return data[index];
+        }else {
+            throw new IllegalArgumentException("Индекс выходит за пределы вектора");
+        }
     }
 
 
@@ -124,23 +128,5 @@ public abstract class Vector<T extends Vector<T>> extends LinearAlgebraObject{
     @Override
     public String toString(){
         return Arrays.toString(this.data);
-    }
-
-
-    public T multiplyByVectorColumn(Matrix m2) {
-        if (this.getDimension() == m2.getDimension()) {
-            float[][] m2Data = m2.getData();
-            float[] resultData = new float[this.data.length];
-            for (int i = 0; i < this.data.length; i++) {
-                float sum = 0;
-                for (int j = 0; j < this.data.length; j++) {
-                    sum += this.data[j] * m2Data[i][j];
-                }
-                resultData[i] = sum;
-            }
-            return createNew(resultData);
-        }else {
-            throw new IllegalArgumentException("Размерности не совпадают!");
-        }
     }
 }

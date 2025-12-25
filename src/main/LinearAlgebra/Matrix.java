@@ -1,4 +1,4 @@
-package LinearAlgebra;
+package main.LinearAlgebra;
 
 import java.util.Arrays;
 
@@ -7,8 +7,12 @@ public abstract class Matrix<T extends Matrix<T>> extends LinearAlgebraObject{
 
 
     public Matrix(float[][] data, int dimension){
-        this.data = data;
         super(dimension);
+        if(data.length == dimension && data[0].length == dimension) {
+            this.data = data;
+        }else {
+            throw new IllegalArgumentException("Длина двумерного массива не совпадает с указанной размерностью");
+        }
     }
 
 
@@ -17,8 +21,8 @@ public abstract class Matrix<T extends Matrix<T>> extends LinearAlgebraObject{
     }
 
     protected abstract T createNew(float[][] data);
-    public abstract T zeroMatrix();
-    public abstract T oneMatrix();
+    //public abstract T zeroMatrix();
+    //public abstract T oneMatrix();
 
 
     public T sum(T m2) {
@@ -38,7 +42,7 @@ public abstract class Matrix<T extends Matrix<T>> extends LinearAlgebraObject{
         float[][] resultData = new float[this.data.length][this.data.length];
         for (int i = 0; i < this.data.length; i++){
             for (int j = 0; j < this.data[i].length; j++) {
-                resultData[i][j] = this.data[i][j] + m2Data[i][j];
+                resultData[i][j] = this.data[i][j] - m2Data[i][j];
             }
         }
         return createNew(resultData);
@@ -52,7 +56,7 @@ public abstract class Matrix<T extends Matrix<T>> extends LinearAlgebraObject{
             for (int j = 0; j < this.data[i].length; j++) {
                 float sum = 0;
                 for (int k = 0; k < this.data.length; k++){
-                    sum += this.data[i][j] + m2Data[i][j];
+                    sum += this.data[i][k] * m2Data[k][j];
                 }
                 resultData[i][j] = sum;
             }
@@ -72,20 +76,22 @@ public abstract class Matrix<T extends Matrix<T>> extends LinearAlgebraObject{
     }
 
 
-    /*
-    public Vector multiplyByVector(Vector v2) {
-        float[] v2Data = v2.getData();
-        float[] resultData = new float[this.data.length];
-        for (int i = 0; i < this.data.length; i++){
-            float sum = 0;
-            for (int j = 0; j < this.data[i].length; j++) {
-                sum += this.data[i][j] * v2Data[j];
+    public <V extends Vector<V>>V multiplyByVector(V vector) {
+        if (this.getDimension() == vector.getDimension()) {
+            float[] v2Data = vector.getData();
+            float[] resultData = new float[this.data.length];
+            for (int i = 0; i < this.data.length; i++) {
+                float sum = 0;
+                for (int j = 0; j < this.data[i].length; j++) {
+                    sum += this.data[i][j] * v2Data[j];
+                }
+                resultData[i] = sum;
             }
-            resultData[i] = sum;
+            return vector.createNew(resultData);
+        }else {
+            throw new IllegalArgumentException("Не поддерживаемые размерности!");
         }
-        return new Vector(resultData);
     }
- */
 
 
     @Override
@@ -97,16 +103,22 @@ public abstract class Matrix<T extends Matrix<T>> extends LinearAlgebraObject{
             return false;
         }else {
             Matrix<?> other = (Matrix<?>) obj;
-            if (Arrays.equals(other.getData(), this.getData())){
-                return true;
+            for (int i = 0; i < data.length; i++){
+                if (!Arrays.equals(other.data[i], this.data[i])){
+                    return false;
+                }
             }
+            return true;
         }
-        return false;
     }
 
 
     @Override
     public String toString(){
-        return Arrays.toString(this.data);
+        String result = "";
+        for (int i = 0; i < data.length; i++){
+            result += Arrays.toString(this.data[i])+"\n";
+        }
+        return result;
     }
 }

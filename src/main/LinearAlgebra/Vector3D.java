@@ -1,4 +1,4 @@
-package LinearAlgebra;
+package main.LinearAlgebra;
 
 public class Vector3D extends Vector<Vector3D>{
     public Vector3D(float [] data){

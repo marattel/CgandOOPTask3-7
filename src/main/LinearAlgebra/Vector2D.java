@@ -1,4 +1,4 @@
-package LinearAlgebra;
+package main.LinearAlgebra;
 
 public class Vector2D extends Vector<Vector2D>{
     public Vector2D(float [] data){
